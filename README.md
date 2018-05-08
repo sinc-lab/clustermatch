@@ -99,3 +99,4 @@ In [6]: partition = get_partition_spectral(cm_sim_matrix, 3)
 ```
 
 The variable `partition` will have the clustering solution for the number of clusters specified (`3` in this case).
+You can specify multiple input data files by filling the list `data_files`.
