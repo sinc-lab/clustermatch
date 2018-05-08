@@ -36,8 +36,50 @@ OK
 ```
 
 
-## Usage
+## Reproducing results
+
+You can reproduce one of the manuscripts results by running an experiment using an artificial
+dataset with several linear and non-linear transformations and see how the method
+behave:
 
 ```bash
-
+$ export PYTHONPATH=/path/to/clustermatch/
+$ python main.py transform_rows_nonlinear03 20 4 1 --n-features 50
+Running now:
+{
+  "data_generator": "Blobs. n_features=50, n_samples=1000, centers=3, cluster_std=0.10, center_box=(-1.0, 1.0)",
+  "data_noise": {
+    "magnitude": 0.0,
+    "percentage_measures": 0.0,
+    "percentage_objects": 0.2
+  },
+  "data_transform": "Nonlinear row transformation 03. 10 simulated data sources; Functions: x^4, log, exp2, 100, log1p, x^5, 10000, log10, 0.0001, log2",
+  "n_reps": 1
+}
 ```
+
+The arguments to the `main.py` scripts are: the data transformation function (`transform_rows_nonlinear03`), the noise percentage (`20`), the number of cores
+used (`4`) and the number of repetitions (`1`). We are using just `1` repetition and 50 features (`--n-features 50`) so as to speed up the experiment.
+If you want to fully run this experiment as it was done in the manuscript (Figure 3), use this comand:
+
+```bash
+python main.py transform_rows_nonlinear03 20 4 20
+```
+
+Once finished, you will find the output in directory `results_transform_rows_nonlinear03_0.2/{TIMESTAMP}/`:
+
+```bash
+$ $ cat results_transform_rows_nonlinear03_0.2/20180508_093733/output000.txt
+
+[...]
+
+method                 ('ari', 'mean')    ('ari', 'std')    ('time', 'mean')
+-------------------  -----------------  ----------------  ------------------
+00.20. Clustermatch               1.00               nan               26.50
+01. SC-Pearson                    0.23               nan                0.38
+02. SC-Spearman                   0.29               nan                0.89
+03. SC-DC                         1.00               nan               40.90
+04. SC-MIC                        1.00               nan               60.62
+```
+
+## Usage
