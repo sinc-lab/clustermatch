@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.node {
+  cursor: pointer;
+}
+
+.node:hover {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node--leaf {
+  fill: white;
+}
+
+.label {
+  font: 9px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
+.label,
+.node--root,
+.node--leaf {
+  /*pointer-events: none;*/
+}
+
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    display: inline-block;
+    /*width: 60px;*/
+    height: 28px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
+
+
+
+</style>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="color-hash.js"></script>
+
+<html>
+	<head>
+		<title>Title</title>
+	</head>
+
+	<body>
+		<h1>Downloads</h1>
+		<ul>
+			<li><a href="cm_pvalue.xlsx">p-values</a></li>
+			<li><a href="partitions.xls">Partition</a></li>
+			<li><a href="shared_tomatoes.xlsx">Shared tomatoes</a></li>
+			<!--li><a href="non_linear_relationships.xlsx">Non-linear relationships</a></li-->
+		</ul>
+
+		<svg width="960" height="960"></svg>
+		<div id="partgraph" style="bottom: 0">
+		</div>
+	</body>
+
+</html>
+
+<script>
+
+
+var svg = d3.select("svg"),
+    margin = 20,
+    diameter = +svg.attr("width"),
+    g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+var color = d3.scaleLinear()
+    .domain([-1, 5])
+    .range(["hsl(152,50%,50%)", "hsl(228,30%,40%)"])
+    .interpolate(d3.interpolateHcl);
+
+var pack = d3.pack()
+    .size([diameter - margin, diameter - margin])
+    .padding(2);
+
+var div = d3.select("#partgraph").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+d3.json("data.json", function(error, root) {
+    if (error) throw error;
+
+    root = d3.hierarchy(root)
+        .sum(function(d) { return d.size; })
+        .sort(function(a, b) { return b.value - a.value; });
+
+    var focus = root,
+        nodes = pack(root).descendants(),
+        view;
+
+    var lookup = {};
+    var listadoFuentes = [];
+
+    for (var item, i = 0; item = nodes[i++];) {
+      if (item.data.children) continue;
+
+      var name = item.data.source;
+
+      if (!(name in lookup)) {
+        lookup[name] = 1;
+        listadoFuentes.push(name);
+      }
+    }
+
+    var colorhash = new ColorHash();
+    //var regex = new RegExp('([a-zA-Z]+)[0-9]{2}_[0-9]{2}')
+    function elegirColor(nombreFuente){
+	//tmp = regex.exec(nombreFuente);
+	return colorhash.hex(nombreFuente);
+        //var v = listadoFuentes.indexOf(nombreFuente) * (360 / listadoFuentes.length) % 360;
+        //return "hsl(" + v + ", 100%, 50%)";
+    }
+
+    var circle = g.selectAll("circle")
+        .data(nodes)
+        .enter().append("circle")
+            .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+            .style("fill", function(d) { return d.children ? color(d.depth) : elegirColor(d.data.source); })
+            .on("click", function(d) { if (focus !== d && d.children) zoom(d), d3.event.stopPropagation(); })
+        .on("mouseover", function(d) {
+            if (d.children) return;
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div	.html("<strong>" + d.data.name + "</strong>" + "<br/>" + d.data.source)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            })
+        .on("mouseout", function(d) {
+            if (d.children) return;
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+
+
+    var text = g.selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+            .attr("class", "label")
+            .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
+            //.style("display", function(d) { return d.parent === root ? "inline" : "none"; })
+            .style("display", "inline")
+            .attr("dy", "0")
+            .text(function(d) { return d.data.name; })
+            .call(wrap, 80)
+            .style("display", function(d) { return d.parent === root ? "inline" : "none"; });
+
+    var node = g.selectAll("circle,text");
+
+    svg
+        .style("background", color(-1))
+        .on("click", function() { zoom(root); });
+
+    zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+    function zoom(d) {
+        var focus0 = focus; focus = d;
+
+        var transition = d3.transition()
+            .duration(d3.event.altKey ? 7500 : 750)
+            .tween("zoom", function(d) {
+                var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+                return function(t) { zoomTo(i(t)); };
+        });
+
+        transition.selectAll("text")
+            .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+                .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+                .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
+                .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+    }
+
+    function zoomTo(v) {
+        var k = diameter / v[2]; view = v;
+        node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+        circle.attr("r", function(d) { return d.r * k; });
+    }
+
+    function wrap(text, width) {
+      text.each(function() {
+        var text = d3.select(this),
+            words = text.text().split(/[\s\-\/\.]+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            y = text.attr("y"),
+            dy = parseFloat(text.attr("dy")),
+            tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+        while (word = words.pop()) {
+          line.push(word);
+          tspan.text(line.join(" "));
+          if (tspan.node().getComputedTextLength() > width) {
+            line.pop();
+            tspan.text(line.join(" "));
+            line = [word];
+            tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", Math.min(++lineNumber, 1) * lineHeight + dy + "em").text(word);
+          }
+        }
+      });
+    }
+
+});
+
+</script>
+
