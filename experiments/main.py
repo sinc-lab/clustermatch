@@ -19,6 +19,7 @@ parser.add_argument('data_transf', type=str)
 parser.add_argument('noise_perc_obj', type=int)
 parser.add_argument('n_jobs', type=int)
 parser.add_argument('n_reps', type=int)
+parser.add_argument('--n-features', default=100, type=int)
 args = parser.parse_args()
 
 # #################
@@ -37,7 +38,7 @@ np.random.seed(0)
 ###########################################
 
 methods = (
-    run_agglo, run_kmeans,
+    # run_agglo, run_kmeans,
     run_spectral_pearson,
     run_spectral_spearman,
     run_spectral_distcorr,
@@ -46,8 +47,12 @@ methods = (
     run_clustermatch_spectral_quantiles_k_medium,
 )
 
+blob_gen = lambda: blobs_data_generator02(n_samples=args.n_features)
+blob_gen.__doc__ = f"""
+Blobs. n_features={args.n_features}, n_samples=1000, centers=3, cluster_std=0.10, center_box=(-1.0, 1.0)
+"""
 data_generators = (
-    blobs_data_generator02,
+    blob_gen,
 )
 
 data_transformers = (

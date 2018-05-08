@@ -22,12 +22,12 @@ def blobs_data_generator01():
     )
 
 
-def blobs_data_generator02(seed=None, n_features=1000):
+def blobs_data_generator02(seed=None, n_samples=100, n_features=1000):
     """
     Blobs. n_samples=100, n_features=1000, centers=3, cluster_std=0.10, center_box=(-1.0, 1.0)
     """
     return make_blobs(
-        n_samples=100,
+        n_samples=n_samples,
         centers=3,
         n_features=n_features,
         cluster_std=0.10,

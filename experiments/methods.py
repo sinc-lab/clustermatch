@@ -74,7 +74,7 @@ def _compute_pearson(x, y):
 
 def run_spectral_pearson(data, k, n_jobs=1):
     """
-    01. Spectral clustering (average, Pearson)
+    01. SC-Pearson
     """
     r_sim_mat = pairwise_distances(data, metric=_compute_pearson, n_jobs=n_jobs)
     # r_sim_mat = squareform(r_sim_vect)
@@ -91,7 +91,7 @@ def _compute_spearman(x, y):
 
 def run_spectral_spearman(data, k, n_jobs=1):
     """
-    02. Spectral clustering (average, Spearman)
+    02. SC-Spearman
     """
     r_sim_mat = pairwise_distances(data, metric=_compute_spearman, n_jobs=n_jobs)
     # r_sim_vect = pdist(data, lambda x, y: abs(spearmanr(x, y)[0]))
@@ -108,7 +108,7 @@ def _compute_distcorr(x, y):
 
 def run_spectral_distcorr(data, k, n_jobs=1):
     """
-    03. Spectral clustering (average, Distance Correlation)
+    03. SC-DC
     """
     r_sim_mat = pairwise_distances(data, metric=_compute_distcorr, n_jobs=n_jobs)
     # r_sim_vect = pdist(data, lambda x, y: abs(distcorr(x, y)))
@@ -125,7 +125,7 @@ def _compute_mic(x, y):
 
 def run_spectral_mic(data, k, n_jobs=1):
     """
-    04. Spectral clustering (average, MIC)
+    04. SC-MIC
     """
     r_sim_mat = pairwise_distances(data, metric=_compute_mic, n_jobs=n_jobs)
     # r_sim_vect = pdist(data, lambda x, y: abs(_mic(x, y)))
@@ -175,7 +175,7 @@ def run_clustermatch_spectral_quantiles(data, k, n_jobs=1):
 
 def run_clustermatch_spectral_quantiles_k_medium(data, k, n_jobs=1):
     """
-    00.20. clustermatch ari (Spectral, internal quantiles (k medium))
+    00.20. Clustermatch
     """
     return _run_clustermatch_spectral_quantiles_generic(data, k, internal_n_clusters=range(2, 10 + 1), n_jobs=n_jobs)
 
