@@ -83,3 +83,19 @@ method                 ('ari', 'mean')    ('ari', 'std')    ('time', 'mean')
 ```
 
 ## Usage
+
+You can also try the method by loading a sample of the tomato dataset used in the manuscript. For that,
+follow this instructions:
+
+```
+$ cd {CLUSTERMATCH_FOLDER}
+$ ipython
+In [1]: from utils.data import merge_sources
+In [2]: from clustermatch.cluster import calculate_simmatrix, get_partition_spectral
+In [3]: data_files = ['experiments/tomato_data/sample.xlsx']
+In [4]: merged_sources, feature_names, sources_names = merge_sources(data_files)
+In [5]: cm_sim_matrix = calculate_simmatrix(merged_sources, n_jobs=4)
+In [6]: partition = get_partition_spectral(cm_sim_matrix, 3)
+```
+
+The variable `partition` will have the clustering solution for the number of clusters specified (`3` in this case).
