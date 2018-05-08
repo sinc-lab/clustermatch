@@ -14,8 +14,6 @@ from sklearn.metrics import adjusted_rand_score as ari
 from sklearn.neighbors import KernelDensity
 from sklearn.preprocessing import scale
 
-from FisherExact.Fisher import fisher_exact
-
 
 def _get_perc_from_k(k):
     return [(1.0 / k) * i for i in range(1, k)]
@@ -225,8 +223,9 @@ def _get_contingency_table(p1, p2):
 
 
 def _get_fisher_pvalue(p1, p2):
-    contingency_table = _get_contingency_table(p1, p2)
-    return fisher_exact(contingency_table)
+    raise NotImplemented()
+    # contingency_table = _get_contingency_table(p1, p2)
+    #return fisher_exact(contingency_table)
 
 
 def _get_chi2(p1, p2):
