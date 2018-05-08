@@ -1,0 +1,21 @@
+name: clustermatch
+channels:
+- defaults
+dependencies:
+- tabulate=0.8.1
+- ipython=6.2.1
+- joblib=0.11
+- matplotlib=2.1.0
+- numpy=1.13.3
+- pandas=0.21.0
+- python=3.6.3
+- requests=2.18.4
+- scikit-learn=0.19.1
+- scipy=1.0.0
+- seaborn=0.8.1
+- xlrd=1.1.0
+- xlwt=1.2.0
+- openpyxl=2.4.9
+- pip:
+  - fisherexact==1.3
+  - minepy==1.2.1
