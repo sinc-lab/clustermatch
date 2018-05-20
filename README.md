@@ -62,7 +62,7 @@ to the Clustermatch folder):
 
 ```bash
 $ export PYTHONPATH={CLUSTERMATCH_FOLDER}
-$ cd {CLUSTERMATCH_FOLDER}/**experiments**
+$ cd {CLUSTERMATCH_FOLDER}/experiments
 $ python main.py transform_rows_nonlinear03 20 4 1 --n-features 50
 Running now:
 {
