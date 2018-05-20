@@ -8,10 +8,11 @@ sinc(i) (Research institute for signals, systems and computational intelligence)
 
 ## Description
 
-Clustermatch is an efficient clustering method for processing highly diverse data. It can handle
-very different data types (such as numerical and categorical), in the presence of linear or
-non-linear relationships, also with noise, and without the need of any previous pre-processing.
-The article describing the method has been sent for publication.
+Clustermatch is an efficient clustering method for processing highly diverse
+data. It can handle very different data types (such as numerical and
+categorical), in the presence of linear or non-linear relationships, also with
+noise, and without the need of any previous pre-processing.  The article
+describing the method has been sent for publication.
 
 If you want to quickly test Clustermatch, you can access an online web-demo from
 [here](http://sinc.unl.edu.ar/web-demo/clustermatch/).
@@ -19,17 +20,28 @@ If you want to quickly test Clustermatch, you can access an online web-demo from
 
 ## Installation
 
-Clustermatch works with Python 3.5 (it should work with version 3.6 too).
-The recommended way to install the environment needed is using the [Anaconda](https://anaconda.org/)/[Miniconda](https://conda.io/miniconda.html) distribution.
-Once conda is installed, move to the folder where Clustermatch was unpacked and follow this steps:
+Clustermatch works with Python 3.6 (it should work with version 3.5 too). You
+also need a C compiler (like GCC) to install `minepy` and run the simulations,
+although it's not necessary to use Clustermatch. In Ubuntu you can install GCC
+by running:
+
+```bash
+$ sudo apt-get install build-essential
+```
+
+The recommended way to install the Python environment needed is using the
+[Anaconda](https://anaconda.org/)/[Miniconda](https://conda.io/miniconda.html)
+distribution. Once conda is installed, move to the folder where Clustermatch
+was unpacked and follow this steps:
 
 ```bash
 $ conda env create -n cm -f environment.yml
 $ conda activate cm
 ```
 
-This will create a conda environment named `cm`. The last step activates the environment.
-You can run the test suite to make sure everything works in your system:
+This will create a conda environment named `cm`. The last step activates the
+environment.  You can run the test suite to make sure everything works in your
+system:
 
 ```bash
 $ python -m unittest discover .
@@ -43,12 +55,14 @@ OK
 
 ## Reproducing results
 
-You can reproduce one of the manuscripts results by running an experiment using an artificial
-dataset with several linear and non-linear transformations and see how the method
-behave:
+You can reproduce one of the manuscripts results by running an experiment using
+an artificial dataset with several linear and non-linear transformations and
+see how the method behave (replace `{CLUSTERMATCH_FOLDER}` with the real path
+to the Clustermatch folder):
 
 ```bash
-$ export PYTHONPATH=/path/to/clustermatch/
+$ export PYTHONPATH={CLUSTERMATCH_FOLDER}
+$ cd {CLUSTERMATCH_FOLDER}/**experiments**
 $ python main.py transform_rows_nonlinear03 20 4 1 --n-features 50
 Running now:
 {
@@ -63,24 +77,28 @@ Running now:
 }
 ```
 
-The arguments to the `main.py` scripts are: the data transformation function (`transform_rows_nonlinear03`), the noise percentage (`20`), the number of cores
-used (`4`) and the number of repetitions (`1`). We are using just `1` repetition and 50 features (`--n-features 50`) so as to speed up the experiment.
-If you want to fully run this experiment as it was done in the manuscript (Figure 3), use this comand:
+The arguments to the `main.py` scripts are: the data transformation function
+(`transform_rows_nonlinear03`), the noise percentage (`20`), the number of
+cores used (`4`) and the number of repetitions (`1`). We are using just `1`
+repetition and 50 features (`--n-features 50`) so as to speed up the
+experiment.  If you want to fully run this experiment as it was done in the
+manuscript (Figure 3), use this comand:
 
 ```bash
 python main.py transform_rows_nonlinear03 20 4 20
 ```
 
-Once finished, you will find the output in directory `results_transform_rows_nonlinear03_0.2/{TIMESTAMP}/`:
+Once finished, you will find the output in directory
+`results_transform_rows_nonlinear03_0.2/{TIMESTAMP}/`:
 
 ```bash
-$ $ cat results_transform_rows_nonlinear03_0.2/20180508_093733/output000.txt
+$ cat results_transform_rows_nonlinear03_0.2/20180508_093733/output000.txt
 
 [...]
 
 method                 ('ari', 'mean')    ('ari', 'std')    ('time', 'mean')
 -------------------  -----------------  ----------------  ------------------
-00.20. Clustermatch               1.00               nan               26.50
+00. Clustermatch                  1.00               nan               26.50
 01. SC-Pearson                    0.23               nan                0.38
 02. SC-Spearman                   0.29               nan                0.89
 03. SC-DC                         1.00               nan               40.90
@@ -89,8 +107,8 @@ method                 ('ari', 'mean')    ('ari', 'std')    ('time', 'mean')
 
 ## Usage
 
-You can also try the method by loading a sample of the tomato dataset used in the manuscript. For that,
-follow this instructions:
+You can also try the method by loading a sample of the tomato dataset used in
+the manuscript. For that, follow this instructions:
 
 ```
 $ cd {CLUSTERMATCH_FOLDER}
@@ -103,5 +121,7 @@ In [5]: cm_sim_matrix = calculate_simmatrix(merged_sources, n_jobs=4)
 In [6]: partition = get_partition_spectral(cm_sim_matrix, 3)
 ```
 
-The variable `partition` will have the clustering solution for the number of clusters specified (`3` in this case).
-You can specify multiple input data files by filling the list `data_files`.
+The variable `partition` will have the clustering solution for the number of
+clusters specified (`3` in this case).  You can specify multiple input data
+files by filling the list `data_files`.
+
