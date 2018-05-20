@@ -110,9 +110,11 @@ method                 ('ari', 'mean')    ('ari', 'std')    ('time', 'mean')
 You can also try the method by loading a sample of the tomato dataset used in
 the manuscript. For that, follow this instructions:
 
-```
+```bash
 $ cd {CLUSTERMATCH_FOLDER}
 $ ipython
+```
+```python
 In [1]: from utils.data import merge_sources
 In [2]: from clustermatch.cluster import calculate_simmatrix, get_partition_spectral
 In [3]: data_files = ['experiments/tomato_data/sample.xlsx']
