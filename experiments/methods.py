@@ -16,58 +16,6 @@ def _mic(x, y):
     return mine.mic()
 
 
-def run_kmeans(data, k, **kwargs):
-    """
-    99. k-means (k-means++, euclidean)
-    """
-    return KMeans(n_clusters=k, n_init=1).fit_predict(data)
-
-
-def run_agglo(data, k, **kwargs):
-    """
-    99. Agglomerative (average, euclidean)
-    """
-    sim_vect = pdist(data)
-    z = average(sim_vect)
-    return fcluster(z, k, criterion='maxclust')
-
-
-def run_agglo_pearson(data, k):
-    """
-    01. Agglomerative (average, Pearson)
-    """
-    r_disim_vect = pdist(data, lambda x, y: 1 - abs(pearsonr(x, y)[0]))
-    z = average(r_disim_vect)
-    return fcluster(z, k, criterion='maxclust')
-
-
-def run_agglo_spearman(data, k):
-    """
-    02. Agglomerative (average, Spearman)
-    """
-    r_disim_vect = pdist(data, lambda x, y: 1 - abs(spearmanr(x, y)[0]))
-    z = average(r_disim_vect)
-    return fcluster(z, k, criterion='maxclust')
-
-
-def run_agglo_distcorr(data, k):
-    """
-    03. Agglomerative (average, Distance correlation)
-    """
-    r_disim_vect = pdist(data, lambda x, y: 1 - abs(distcorr(x, y)))
-    z = average(r_disim_vect)
-    return fcluster(z, k, criterion='maxclust')
-
-
-def run_agglo_mic(data, k):
-    """
-    04. Agglomerative (average, MIC)
-    """
-    r_disim_vect = pdist(data, lambda x, y: 1 - abs(_mic(x, y)))
-    z = average(r_disim_vect)
-    return fcluster(z, k, criterion='maxclust')
-
-
 def _compute_pearson(x, y):
     return abs(pearsonr(x, y)[0])
 
@@ -137,45 +85,13 @@ def run_spectral_mic(data, k, n_jobs=1):
 
 
 #########
-# k-means (internal clustering)
-#########
-
-def run_clustermatch_spectral_kmeans(data, k):
-    """
-    00. clustermatch (internal kmeans, Spectral clustering)
-    """
-    sim_matrix = calculate_simmatrix(data, internal_clustering_method='kmeans')
-    return get_partition_spectral(sim_matrix, n_clusters=k)
-
-
-def run_clustermatch_spectral_kmeans_k_medium(data, k):
-    """
-    00.05. clustermatch (Spectral, internal k medium, all partitions, max ARI)
-    """
-    return _run_clustermatch_spectral_kmeans_generic(data, k, internal_n_clusters=tuple(range(2, 10+1)))
-
-
-def _run_clustermatch_spectral_kmeans_generic(data, k, internal_n_clusters=None):
-    sim_matrix = calculate_simmatrix(data,
-                                     internal_clustering_method='kmeans',
-                                     internal_n_clusters=internal_n_clusters)
-    return get_partition_spectral(sim_matrix, n_clusters=k)
-
-
-#########
 # quantiles (internal clustering)
 #########
-
-def run_clustermatch_spectral_quantiles(data, k, n_jobs=1):
-    """
-    00.10. clustermatch ari (Spectral, internal quantiles)
-    """
-    return _run_clustermatch_spectral_quantiles_generic(data, k, n_jobs=n_jobs)
 
 
 def run_clustermatch_spectral_quantiles_k_medium(data, k, n_jobs=1):
     """
-    00.20. Clustermatch
+    00. Clustermatch
     """
     return _run_clustermatch_spectral_quantiles_generic(data, k, internal_n_clusters=range(2, 10 + 1), n_jobs=n_jobs)
 
