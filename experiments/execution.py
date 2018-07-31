@@ -4,15 +4,19 @@ from time import time
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import adjusted_rand_score as ari
+from sklearn.metrics import adjusted_rand_score as ari, adjusted_mutual_info_score as ami
 from tabulate import tabulate
 
 from utils.output import get_timestamp
 
 
-def _run_experiment(data_generator, methods, data_transform=None, data_noise=None, **kwargs):
+def _run_experiment(data_generator, methods, k_final=None, data_transform=None, data_noise=None, metric='ari', **kwargs):
     data, data_ref = data_generator()
-    data_n_clusters = len(np.unique(data_ref))
+
+    if k_final is None:
+        data_n_clusters = len(np.unique(data_ref))
+    else:
+        data_n_clusters = k_final
 
     if data_transform is not None:
         data = data_transform(data, data_noise=data_noise)
@@ -27,13 +31,16 @@ def _run_experiment(data_generator, methods, data_transform=None, data_noise=Non
         end_time = time()
         met_time = end_time - start_time
 
-        part_ari = ari(data_ref, part)
+        if metric == 'ari':
+            part_metric_value = ari(data_ref, part)
+        elif metric == 'ami':
+            part_metric_value = ami(data_ref, part)
 
-        yield (met_name, met_time, part_ari)
+        yield (met_name, met_time, part_metric_value)
 
 
 def _run_full_experiment(experiment_data, **kwargs):
-    results = pd.DataFrame(columns=('data_transf', 'noise_perc_obj', 'noise_perc_mes', 'noise_mes_mag', 'rep', 'method', 'time', 'ari'))
+    results = pd.DataFrame(columns=('data_transf', 'noise_perc_obj', 'noise_perc_mes', 'noise_mes_mag', 'rep', 'method', 'time', 'metric'))
 
     glox_idx = 0
     for i in range(experiment_data['n_reps']):
@@ -71,7 +78,7 @@ def _get_experiment_description(experiment_data):
     return dumps(experiment_data, indent=2, cls=ExperimentEnconder, sort_keys=True)
 
 
-def _get_summary_results(results, group_by='method', aggregate={'ari': ['mean', 'std'], 'time': 'mean'}):
+def _get_summary_results(results, group_by='method', aggregate={'metric': ['mean', 'std'], 'time': 'mean'}):
     summary = results.groupby(group_by).agg(aggregate).round(2)
     return summary[sorted(list(aggregate.keys()))]
 
@@ -82,7 +89,7 @@ def run_experiments_combination(n_reps, data_generators, methods, data_transform
     experiment_dir = os.path.join(results_dir, timestamp)
     os.makedirs(experiment_dir)
 
-    final_results = pd.DataFrame(columns=('data_transf', 'noise_perc_obj', 'noise_perc_mes', 'noise_mes_mag', 'rep', 'method', 'time', 'ari'))
+    final_results = pd.DataFrame(columns=('data_transf', 'noise_perc_obj', 'noise_perc_mes', 'noise_mes_mag', 'rep', 'method', 'time', 'metric'))
 
     glob_idx = 0
     for data_gen in data_generators:
@@ -95,6 +102,9 @@ def run_experiments_combination(n_reps, data_generators, methods, data_transform
                     'data_generator': data_gen,
                     'data_transform': data_trans,
                     'data_noise': data_noise,
+                    'clustering_metric': kwargs['metric'],
+                    'clustering_algorithm': kwargs['clustering_algorithm'],
+                    'k_final': kwargs['k_final'],
                 }
 
                 experiment_description = _get_experiment_description(experiment_data)

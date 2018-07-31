@@ -6,7 +6,7 @@ import numpy as np
 
 from experiments.data import blobs_data_generator02, transform_rows_nonlinear_and_categorical01
 from experiments.execution import run_experiments_combination
-from experiments.methods import run_clustermatch_spectral_quantiles_k_medium
+from experiments.methods import run_clustermatch_quantiles_k_medium
 
 # #################
 # GLOBAL SETTINGS
@@ -24,7 +24,7 @@ np.random.seed(0)
 ###########################################
 
 methods = (
-    run_clustermatch_spectral_quantiles_k_medium,
+    run_clustermatch_quantiles_k_medium,
 )
 
 data_generators = (blobs_data_generator02,)

@@ -6,15 +6,19 @@ import argparse
 import experiments.data as exp_data
 from experiments.data import blobs_data_generator02
 from experiments.execution import run_experiments_combination
-from experiments.methods import run_spectral_pearson, run_spectral_spearman, \
-    run_clustermatch_spectral_quantiles_k_medium, run_spectral_distcorr, run_spectral_mic
+from experiments.methods import run_pearson, run_spearman, \
+    run_clustermatch_quantiles_k_medium, run_distcorr, run_mic
 
 parser = argparse.ArgumentParser()
-parser.add_argument('data_transf', type=str)
-parser.add_argument('noise_perc_obj', type=int)
-parser.add_argument('n_jobs', type=int)
-parser.add_argument('n_reps', type=int)
+parser.add_argument('--data-transf', required=True, type=str)
+parser.add_argument('--noise-perc', required=True, type=int)
+parser.add_argument('--k-final', type=int)
+parser.add_argument('--clustering-algorithm', type=str, default='spectral',
+                    choices=('spectral', 'hc-complete', 'hc-single', 'hc-average'))
+parser.add_argument('--n-jobs', type=int, default=1)
+parser.add_argument('--n-reps', type=int, default=1)
 parser.add_argument('--n-features', default=100, type=int)
+parser.add_argument('--clustering-metric', default='ari', type=str, choices=('ari', 'ami'))
 args = parser.parse_args()
 
 # #################
@@ -33,13 +37,11 @@ np.random.seed(0)
 ###########################################
 
 methods = (
-    # run_agglo, run_kmeans,
-    run_spectral_pearson,
-    run_spectral_spearman,
-    run_spectral_distcorr,
-    run_spectral_mic,
-    # run_clustermatch_spectral_kmeans_k_medium,
-    run_clustermatch_spectral_quantiles_k_medium,
+    run_pearson,
+    run_spearman,
+    run_distcorr,
+    run_mic,
+    run_clustermatch_quantiles_k_medium,
 )
 
 blob_gen = lambda: blobs_data_generator02(n_samples=args.n_features)
@@ -55,7 +57,7 @@ data_transformers = (
 )
 
 data_noise_levels = (
-    {'percentage_objects': args.noise_perc_obj / 100.0, 'percentage_measures': 0.00, 'magnitude': 0.00},
+    {'percentage_objects': args.noise_perc / 100.0, 'percentage_measures': 0.00, 'magnitude': 0.00},
 )
 
 run_experiments_combination(
@@ -65,5 +67,7 @@ run_experiments_combination(
     data_transformers=data_transformers,
     data_noise_levels=data_noise_levels,
     n_jobs=args.n_jobs,
+    clustering_algorithm=args.clustering_algorithm,
+    metric=args.clustering_metric,
+    k_final=args.k_final,
 )
-
