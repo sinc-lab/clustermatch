@@ -11,6 +11,9 @@ from experiments.data import blobs_data_generator01, transform_rows_full_scaled0
 
 class ExperimentDataTest(unittest.TestCase):
     def test_blob_data_generator(self):
+        # Prepare
+        np.random.seed(0)
+
         # Run
         data, data_ref = blobs_data_generator01()
 
