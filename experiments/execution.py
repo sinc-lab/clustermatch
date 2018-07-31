@@ -10,8 +10,9 @@ from tabulate import tabulate
 from utils.output import get_timestamp
 
 
-def _run_experiment(data_generator, methods, k_final=None, data_transform=None, data_noise=None, metric='ari', **kwargs):
-    data, data_ref = data_generator()
+def _run_experiment(rep_number, data_generator, methods, k_final=None, data_transform=None, data_noise=None,
+                    data_seed_mode=False, metric='ari', **kwargs):
+    data, data_ref = data_generator(seed=(rep_number if data_seed_mode else None))
 
     if k_final is None:
         data_n_clusters = len(np.unique(data_ref))
@@ -44,7 +45,8 @@ def _run_full_experiment(experiment_data, **kwargs):
 
     glox_idx = 0
     for i in range(experiment_data['n_reps']):
-        for a_result in _run_experiment(data_generator=experiment_data['data_generator'],
+        for a_result in _run_experiment(i,
+                                        data_generator=experiment_data['data_generator'],
                                         methods=experiment_data['methods'],
                                         data_transform=experiment_data['data_transform'] if 'data_transform' in experiment_data else None,
                                         data_noise=experiment_data['data_noise'] if 'data_noise' in experiment_data else None,

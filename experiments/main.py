@@ -10,6 +10,7 @@ from experiments.methods import run_pearson, run_spearman, \
     run_clustermatch_quantiles_k_medium, run_distcorr, run_mic
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--data-seed-mode', action='store_true')
 parser.add_argument('--data-transf', required=True, type=str)
 parser.add_argument('--noise-perc', required=True, type=int)
 parser.add_argument('--k-final', type=int)
@@ -44,9 +45,9 @@ methods = (
     run_clustermatch_quantiles_k_medium,
 )
 
-blob_gen = lambda: blobs_data_generator02(n_samples=args.n_features)
+blob_gen = lambda seed=None: blobs_data_generator02(seed=seed, n_samples=args.n_features)
 blob_gen.__doc__ = f"""
-Blobs. n_features={args.n_features}, n_samples=1000, centers=3, cluster_std=0.10, center_box=(-1.0, 1.0)
+Blobs (data_seed_mode={args.data_seed_mode}). n_features={args.n_features}, n_samples=1000, centers=3, cluster_std=0.10, center_box=(-1.0, 1.0)
 """
 data_generators = (
     blob_gen,
@@ -70,4 +71,5 @@ run_experiments_combination(
     clustering_algorithm=args.clustering_algorithm,
     metric=args.clustering_metric,
     k_final=args.k_final,
+    data_seed_mode=args.data_seed_mode,
 )
