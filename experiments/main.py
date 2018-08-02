@@ -15,7 +15,7 @@ parser.add_argument('--data-transf', required=True, type=str)
 parser.add_argument('--noise-perc', required=True, type=int)
 parser.add_argument('--k-final', type=int)
 parser.add_argument('--clustering-algorithm', type=str, default='spectral',
-                    choices=('spectral', 'hc-complete', 'hc-single', 'hc-average'))
+                    choices=('spectral', 'hc-complete', 'hc-single', 'hc-average', 'aff-prop', 'dbscan'))
 parser.add_argument('--n-jobs', type=int, default=1)
 parser.add_argument('--n-reps', type=int, default=1)
 parser.add_argument('--n-features', default=100, type=int)
