@@ -69,7 +69,10 @@ def _apply_noise(data, data_noise):
 
     noisy_data = data.copy()
 
-    if np.issubdtype(data.dtype, np.number):
+    if np.issubdtype(data.dtype, np.number) or all([np.isreal(x) for row in data for x in row]):
+        if not np.issubdtype(data.dtype, np.number):
+            data = data.astype(float)
+
         if len(selected_rows) > 0:
             noisy_points = np.random.rand(len(selected_rows), data_n_objects)
             noisy_points = minmax_scale(noisy_points, axis=1, feature_range=(data.min(), data.max()))
@@ -84,12 +87,21 @@ def _apply_noise(data, data_noise):
             noisy_data[:, selected_cols] = noisy_points
 
     else:
+        assert all([not np.isreal(x) for row in data for x in row])
+
         unique_cat = np.unique(data)
 
-        for i in range(data.shape[0]):
-            for j in range(data.shape[1]):
-                if np.random.rand() < magnitude:
-                    noisy_data[i, j] = np.random.choice(unique_cat)
+        if len(selected_cols) > 0:
+            # noisy_points = np.random.rand(data_n_measures, len(selected_cols))
+            noisy_points = np.random.choice(unique_cat, (data_n_measures, len(selected_cols)))
+            # noisy_points = minmax_scale(noisy_points, axis=1, feature_range=(data.min(), data.max()))
+
+            noisy_data[:, selected_cols] = noisy_points
+
+        # for i in range(data.shape[0]):
+        #     for j in range(data.shape[1]):
+        #         if np.random.rand() < magnitude:
+        #             noisy_data[i, j] = np.random.choice(unique_cat)
 
     return noisy_data
 
