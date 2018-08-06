@@ -477,9 +477,6 @@ def get_partition_spectral(sim_matrix, n_clusters):
     if not hasattr(n_clusters, '__iter__'):
         n_clusters = (n_clusters,)
 
-    # en este punto tuve que resolver un problema con ari: a veces devuelve
-    # valores negativos, ya que el índice va de -1 a 1. Eso hace que SpectralClustering
-    # explote a veces. Entonces, acá escalo la matriz guardada en p_dist, entre 0 y 1.
     norm_sim_matrix = get_normalized_sim_matrix(sim_matrix)
 
     def clustering_method(k):

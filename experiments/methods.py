@@ -6,7 +6,7 @@ from scipy.stats import pearsonr, spearmanr
 from sklearn.cluster import SpectralClustering, AffinityPropagation, DBSCAN
 from sklearn.metrics.pairwise import pairwise_distances
 
-from clustermatch.cluster import cm
+from clustermatch.cluster import cm, calculate_simmatrix, get_partition_spectral
 from utils.methods import distcorr
 
 
@@ -121,5 +121,11 @@ def run_clustermatch_quantiles_k_medium(data, k, n_jobs=1, **kwargs):
     """
     00. Clustermatch
     """
-    r_sim_mat = pairwise_distances(data, metric=_compute_cm, n_jobs=n_jobs)
-    return _run_clustering_generic(r_sim_mat, k, n_jobs=n_jobs, **kwargs)
+    if data.dtype == object:
+        # for categorical data use our internal functions
+        r_sim_mat = calculate_simmatrix(data, **kwargs)
+        return get_partition_spectral(r_sim_mat, n_clusters=k)
+    else:
+        # for numerical experiment, run it in the same way we run the rest of the methods
+        r_sim_mat = pairwise_distances(data, metric=_compute_cm, n_jobs=n_jobs)
+        return _run_clustering_generic(r_sim_mat, k, n_jobs=n_jobs, **kwargs)

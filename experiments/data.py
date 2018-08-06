@@ -94,7 +94,7 @@ def _apply_noise(data, data_noise):
     return noisy_data
 
 
-def _generic_data_transformation(data, sources_transformers, **kwargs):
+def _generic_data_transformation(data, sources_transformers, dtype=None, **kwargs):
     if len(sources_transformers) == 0:
         return data
 
@@ -102,9 +102,8 @@ def _generic_data_transformation(data, sources_transformers, **kwargs):
     n_sim_sources = len(sources_transformers)
     data_step = int(n_data / n_sim_sources)
 
-    t_data = np.empty(data.shape, dtype=data.dtype)
+    t_data = np.empty(data.shape, dtype=data.dtype if dtype is None else dtype)
     i = 0
-    # is_data_object = False
 
     for sl, data_chunk in _get_array_chunks(data, data_step):
         transformer = sources_transformers[i % n_sim_sources]
@@ -127,15 +126,12 @@ def _generic_data_transformation(data, sources_transformers, **kwargs):
 
         i += 1
 
-    # if not is_data_object:
-    #     t_data = t_data.astype(float)
-
     return t_data
 
 
 def transform_rows_nonlinear_and_categorical01(data, **kwargs):
     """
-    Nonlinear and categorical row transformation 01. 2 numerical data sources (x^2, log) and 2 categorical.
+    Nonlinear and categorical row transformation 01. 7 numerical data sources (x^4, log, exp2, 100, x^5, 10000, 0.0001) and 3 categorical (10, 4 and 2 categories).
     """
     def create_categorical(data, cats):
         n_cats = len(cats)
@@ -143,42 +139,28 @@ def transform_rows_nonlinear_and_categorical01(data, **kwargs):
 
         for data_row_idx, data_row in enumerate(data):
             data_row_part = run_quantile_clustering(data_row, n_cats)
-            t_data[data_row_idx] = np.array([cats[x] for x in data_row_part])
+            t_data[data_row_idx] = np.array([cats[int(x)] for x in data_row_part])
 
         return t_data
 
     sources_transformers = [
-        lambda x: np.power(x, 2),
+        lambda x: np.power(x, 4),
         lambda x: np.log(np.abs(x)),
-        lambda x: create_categorical(x, cats=['cancer', 'no cancer']),
+        lambda x: np.exp2(x),
+        100.0,
+        lambda x: create_categorical(x, cats=[
+            'cat01', 'cat02', 'cat03', 'cat04',
+            'cat05', 'cat06', 'cat07', 'cat08',
+            'cat09', 'cat10',
+        ]),
+        lambda x: np.power(x, 5),
+        10000.0,
         lambda x: create_categorical(x, cats=['cat01', 'cat02', 'cat03', 'cat04']),
+        0.0001,
+        lambda x: create_categorical(x, cats=['cat01', 'cat02']),
     ]
 
-    return _generic_data_transformation(data, sources_transformers, **kwargs)
-
-
-def transform_rows_nonlinear_and_categorical02(data, **kwargs):
-    """
-    Nonlinear and categorical row transformation 01. 2 numerical data sources (x^2, log) and 2 categorical.
-    """
-    def create_categorical(data, cats):
-        n_cats = len(cats)
-        t_data = np.empty(data.shape, dtype=object)
-
-        for data_row_idx, data_row in enumerate(data):
-            data_row_part = run_quantile_clustering(data_row, n_cats)
-            t_data[data_row_idx] = np.array([cats[x] for x in data_row_part])
-
-        return t_data
-
-    sources_transformers = [
-        lambda x: x,
-        lambda x: x,
-        lambda x: create_categorical(x, cats=['cancer', 'no cancer']),
-        lambda x: create_categorical(x, cats=['cat01', 'cat02', 'cat03', 'cat04']),
-    ]
-
-    return _generic_data_transformation(data, sources_transformers, **kwargs)
+    return _generic_data_transformation(data, sources_transformers, dtype=object, **kwargs)
 
 
 def transform_rows_full_scaled01(data):

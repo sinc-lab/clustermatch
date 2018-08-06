@@ -20,6 +20,7 @@ parser.add_argument('--n-jobs', type=int, default=1)
 parser.add_argument('--n-reps', type=int, default=1)
 parser.add_argument('--n-features', default=100, type=int)
 parser.add_argument('--clustering-metric', default='ari', type=str, choices=('ari', 'ami'))
+parser.add_argument('--methods-to-test', type=str, default='all', choices=('all', 'cm'))
 args = parser.parse_args()
 
 # #################
@@ -37,13 +38,18 @@ np.random.seed(0)
 # Execution
 ###########################################
 
-methods = (
-    run_pearson,
-    run_spearman,
-    run_distcorr,
-    run_mic,
-    run_clustermatch_quantiles_k_medium,
-)
+if args.methods_to_test == 'all':
+    methods = (
+        run_pearson,
+        run_spearman,
+        run_distcorr,
+        run_mic,
+        run_clustermatch_quantiles_k_medium,
+    )
+elif args.methods_to_test == 'cm':
+    methods = (
+        run_clustermatch_quantiles_k_medium,
+    )
 
 blob_gen = lambda seed=None: blobs_data_generator02(seed=seed, n_samples=args.n_features)
 blob_gen.__doc__ = f"""
