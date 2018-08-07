@@ -141,35 +141,62 @@ def _generic_data_transformation(data, sources_transformers, dtype=None, **kwarg
     return t_data
 
 
+def _create_categorical(data, cats):
+    n_cats = len(cats)
+    t_data = np.empty(data.shape, dtype=object)
+
+    for data_row_idx, data_row in enumerate(data):
+        data_row_part = run_quantile_clustering(data_row, n_cats)
+        t_data[data_row_idx] = np.array([cats[int(x)] for x in data_row_part])
+
+    return t_data
+
+
 def transform_rows_nonlinear_and_categorical01(data, **kwargs):
     """
     Nonlinear and categorical row transformation 01. 7 numerical data sources (x^4, log, exp2, 100, x^5, 10000, 0.0001) and 3 categorical (10, 4 and 2 categories).
     """
-    def create_categorical(data, cats):
-        n_cats = len(cats)
-        t_data = np.empty(data.shape, dtype=object)
-
-        for data_row_idx, data_row in enumerate(data):
-            data_row_part = run_quantile_clustering(data_row, n_cats)
-            t_data[data_row_idx] = np.array([cats[int(x)] for x in data_row_part])
-
-        return t_data
 
     sources_transformers = [
         lambda x: np.power(x, 4),
         lambda x: np.log(np.abs(x)),
         lambda x: np.exp2(x),
         100.0,
-        lambda x: create_categorical(x, cats=[
+        lambda x: _create_categorical(x, cats=[
             'cat01', 'cat02', 'cat03', 'cat04',
             'cat05', 'cat06', 'cat07', 'cat08',
             'cat09', 'cat10',
         ]),
         lambda x: np.power(x, 5),
         10000.0,
-        lambda x: create_categorical(x, cats=['cat01', 'cat02', 'cat03', 'cat04']),
+        lambda x: _create_categorical(x, cats=['cat01', 'cat02', 'cat03', 'cat04']),
         0.0001,
-        lambda x: create_categorical(x, cats=['cat01', 'cat02']),
+        lambda x: _create_categorical(x, cats=['cat01', 'cat02']),
+    ]
+
+    return _generic_data_transformation(data, sources_transformers, dtype=object, **kwargs)
+
+
+def transform_rows_nonlinear_and_categorical02(data, **kwargs):
+    """
+    Nonlinear and categorical row transformation 02. 7 numerical data sources (x^4, log, exp2, log1p, x^5, log10, log2) and 3 categorical (8, 4 and 2 categories).
+    """
+
+    sources_transformers = [
+        lambda x: np.power(x, 4),
+        lambda x: np.log(np.abs(x)),
+        lambda x: np.exp2(x),
+        lambda x: _create_categorical(x, cats=[
+            'cat01', 'cat02', 'cat03', 'cat04',
+            'cat05', 'cat06', 'cat07', 'cat08',
+            'cat09', 'cat10',
+        ]),
+        lambda x: np.log1p(np.abs(x)),
+        lambda x: np.power(x, 5),
+        lambda x: _create_categorical(x, cats=['cat01', 'cat02', 'cat03', 'cat04']),
+        lambda x: np.log10(np.abs(x)),
+        lambda x: _create_categorical(x, cats=['cat01', 'cat02']),
+        lambda x: np.log2(np.abs(x)),
     ]
 
     return _generic_data_transformation(data, sources_transformers, dtype=object, **kwargs)
