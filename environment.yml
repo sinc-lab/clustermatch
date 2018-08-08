@@ -16,5 +16,7 @@ dependencies:
 - xlrd=1.1
 - xlwt=1.2
 - openpyxl=2.4
+- pillow=5.1
 - pip:
   - minepy==1.2.1
+  - pyclustering==0.8.1
