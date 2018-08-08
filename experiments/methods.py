@@ -6,14 +6,28 @@ from scipy.stats import pearsonr, spearmanr
 from sklearn.cluster import SpectralClustering, AffinityPropagation, DBSCAN
 from sklearn.metrics.pairwise import pairwise_distances
 
+from pyclustering.cluster.kmedoids import kmedoids
+from pyclustering.cluster.optics import optics
+
 from clustermatch.cluster import cm, calculate_simmatrix, get_partition_spectral
 from utils.methods import distcorr
 
 
-SPECTRAL_METHOD= 'spectral'
-AFFINITY_PROPAGATION_METHOD= 'aff-prop'
-DBSCAN_METHOD='dbscan'
-HC_PREFIX_METHODS= 'hc-'
+SPECTRAL_METHOD = 'spectral'
+PAM_METHOD = 'pam'
+AFFINITY_PROPAGATION_METHOD = 'aff-prop'
+DBSCAN_METHOD = 'dbscan'
+OPTICS_METHOD = 'optics'
+HC_PREFIX_METHODS = 'hc-'
+
+
+def get_part_from_clusters(clusters, n_objects):
+    part = np.full(n_objects, np.nan)
+
+    for clus_idx, clus in enumerate(clusters):
+        part[clus] = clus_idx
+
+    return part
 
 
 def _run_clustering_generic(sim_data_matrix, k, clustering_algorithm, n_jobs=1):
@@ -31,21 +45,38 @@ def _run_clustering_generic(sim_data_matrix, k, clustering_algorithm, n_jobs=1):
         else:
             raise Exception('Programming error')
 
-    elif clustering_algorithm.startswith(HC_PREFIX_METHODS) or clustering_algorithm in (DBSCAN_METHOD,):
+    elif clustering_algorithm.startswith(HC_PREFIX_METHODS) or clustering_algorithm in (DBSCAN_METHOD, PAM_METHOD, OPTICS_METHOD):
         dist_data_matrix = 1 - sim_data_matrix
-        # convert matrix to condensed form for hc
-        dist_data_matrix = squareform(dist_data_matrix, checks=False)
+        n_objects = dist_data_matrix.shape[0]
 
         assert np.abs((dist_data_matrix - dist_data_matrix.T)).max() < 1e12
 
         if clustering_algorithm.startswith(HC_PREFIX_METHODS):
+            # convert matrix to condensed form for hc
+            dist_data_matrix = squareform(dist_data_matrix, checks=False)
+
             hc_method = clustering_algorithm.split('-')[1]
             z = linkage(dist_data_matrix, method=hc_method, metric=None)
             return fcluster(z, k, criterion='maxclust')
 
         elif clustering_algorithm == DBSCAN_METHOD:
-            dist_data_matrix = squareform(dist_data_matrix, checks=False)
             return DBSCAN(metric='precomputed', n_jobs=n_jobs).fit_predict(dist_data_matrix)
+
+        elif clustering_algorithm == PAM_METHOD:
+            initial_medoids = np.random.choice(n_objects, k)
+            kmedoids_instance = kmedoids(dist_data_matrix, initial_medoids, data_type='distance_matrix')
+            kmedoids_instance.process()
+
+            return get_part_from_clusters(kmedoids_instance.get_clusters(), n_objects)
+
+        elif clustering_algorithm == OPTICS_METHOD:
+            radius = 2.0
+            neighbors = 3
+            optics_instance = optics(dist_data_matrix, radius, neighbors, k, data_type='distance_matrix')
+
+            optics_instance.process()
+
+            return get_part_from_clusters(optics_instance.get_clusters(), n_objects)
 
         else:
             raise Exception('Programming error')
