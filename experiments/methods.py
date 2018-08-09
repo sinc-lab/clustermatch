@@ -30,6 +30,48 @@ def get_part_from_clusters(clusters, n_objects):
     return part
 
 
+def _get_partition_score(distance_matrix, part, medoids):
+    distance_sum = 0
+
+    for cluster_idx in range(len(part)):
+        cluster_medoid = medoids[cluster_idx]
+        cluster_points_idx = part[cluster_idx]
+        cluster_points_dist_to_medoid = distance_matrix[cluster_points_idx, cluster_medoid]
+
+        distance_sum += np.sum(cluster_points_dist_to_medoid)
+
+    return distance_sum
+
+
+def _run_pam(distance_matrix, k, n_reps=1):
+    n_objects = distance_matrix.shape[0]
+
+    parts = []
+    final_parts = []
+    parts_medoids = []
+    parts_score = []
+
+    for rep_idx in range(n_reps):
+        initial_medoids = np.random.choice(n_objects, k)
+        kmedoids_instance = kmedoids(distance_matrix, initial_medoids, data_type='distance_matrix')
+        kmedoids_instance.process()
+
+        part = kmedoids_instance.get_clusters()
+        parts.append(part)
+
+        final_part = get_part_from_clusters(part, n_objects)
+        final_parts.append(final_part)
+
+        part_medoids = kmedoids_instance.get_medoids()
+        parts_medoids.append(part_medoids)
+
+        part_score = _get_partition_score(distance_matrix, part, part_medoids)
+        parts_score.append(part_score)
+
+    best_part_idx = np.argmin(parts_score)
+    return final_parts[best_part_idx]
+
+
 def _run_clustering_generic(sim_data_matrix, k, clustering_algorithm, n_jobs=1):
     np.fill_diagonal(sim_data_matrix, 1.0)
     min_val, max_val = sim_data_matrix.min(), sim_data_matrix.max()
@@ -63,11 +105,7 @@ def _run_clustering_generic(sim_data_matrix, k, clustering_algorithm, n_jobs=1):
             return DBSCAN(metric='precomputed', n_jobs=n_jobs).fit_predict(dist_data_matrix)
 
         elif clustering_algorithm == PAM_METHOD:
-            initial_medoids = np.random.choice(n_objects, k)
-            kmedoids_instance = kmedoids(dist_data_matrix, initial_medoids, data_type='distance_matrix')
-            kmedoids_instance.process()
-
-            return get_part_from_clusters(kmedoids_instance.get_clusters(), n_objects)
+            return _run_pam(dist_data_matrix, k, n_reps=10)
 
         elif clustering_algorithm == OPTICS_METHOD:
             radius = 2.0
