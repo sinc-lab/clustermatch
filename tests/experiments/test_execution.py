@@ -50,11 +50,11 @@ class ExperimentExecutionTest(unittest.TestCase):
 
         # Run
         results = list(_run_experiment(
-            data_generator01, methods=(method01,)
+            0, data_generator01, methods=(method01,)
         ))
 
         # Validate
-        data_generator01.assert_called_once_with()
+        data_generator01.assert_called_once_with(seed=None)
 
         assert method01.call_count == 1
         data_arg, n_clusters_arg = method01.call_args[0]
@@ -99,12 +99,13 @@ class ExperimentExecutionTest(unittest.TestCase):
 
         # Run
         results = list(_run_experiment(
+            0,
             data_generator01,
             methods=(method01, method02)
         ))
 
         # Validate
-        data_generator01.assert_called_once_with()
+        data_generator01.assert_called_once_with(seed=None)
 
         assert method01.call_count == 1
         data_arg, n_clusters_arg = method01.call_args[0]
@@ -151,13 +152,14 @@ class ExperimentExecutionTest(unittest.TestCase):
 
         # Run
         results = list(_run_experiment(
+            0,
             data_generator01,
             methods=(method01, method02),
             data_transform=data_transform01
         ))
 
         # Validate
-        data_generator01.assert_called_once_with()
+        data_generator01.assert_called_once_with(seed=None)
 
         assert data_transform01.call_count == 1
         data_arg, = data_transform01.call_args[0]
@@ -305,7 +307,7 @@ class ExperimentExecutionTest(unittest.TestCase):
         assert 'rep' in results.columns
         assert 'method' in results.columns
         assert 'time' in results.columns
-        assert 'ari' in results.columns
+        assert 'metric' in results.columns
 
         assert len(results['data_transf'].unique()) == 1
         assert 'data transform name' in results['data_transf'].unique()
@@ -324,7 +326,7 @@ class ExperimentExecutionTest(unittest.TestCase):
         assert 'method01' in results['method'].unique()
         assert 'method02' in results['method'].unique()
 
-        results_grp = results.groupby('method')['ari'].mean().round(3)
+        results_grp = results.groupby('method')['metric'].mean().round(3)
         assert results_grp.loc['method01'] == 1.00
         assert results_grp.loc['method02'] == -0.077
 
@@ -394,7 +396,7 @@ class ExperimentExecutionTest(unittest.TestCase):
         assert 'method01' in results['method'].unique()
         assert 'method02' in results['method'].unique()
 
-        results_grp = results.groupby('method')['ari'].mean().round(2)
+        results_grp = results.groupby('method')['metric'].mean().round(2)
         assert results_grp.loc['method01'] == 0.56
         assert results_grp.loc['method02'] == 0.42
 
