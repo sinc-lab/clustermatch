@@ -124,6 +124,13 @@ def append_data_description(text, timestamp):
 
 
 @setup_results_dir
+def write_text_file(text_content, file_name, timestamp):
+    filepath = os.path.join(RESULTS_DIR, timestamp, file_name)
+    with open(filepath, 'w') as f:
+        f.write(text_content)
+
+
+@setup_results_dir
 def write_data_description(data_files, merged_sources, feature_names, sources_names, timestamp):
     filepath = os.path.join(RESULTS_DIR, timestamp, 'README.txt')
     with open(filepath, 'w') as f:
