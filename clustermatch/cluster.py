@@ -262,7 +262,7 @@ def _get_perm_set(obj1, obj2, clustering_method, perm_range):
     return other_cms
 
 
-def _get_perm_pvalue(orig_cm, obj1, obj2, clustering_method, n_perm, perm_n_jobs=1):
+def _get_perm_pvalue(orig_cm, obj1, obj2, clustering_method, n_perm, perm_n_jobs=1, **kwargs):
     n_cpus = perm_n_jobs if perm_n_jobs > 0 else cpu_count()
     step = int(np.ceil(n_perm / n_cpus))
     full_perm_range = range(0, n_perm, step)
@@ -470,7 +470,7 @@ def get_pval_matrix_by_partition(pval_matrix, partition):
     return pval_matrix_sorted.loc[sorted_index, sorted_index]
 
 
-def get_partition_spectral(sim_matrix, n_clusters):
+def get_partition_spectral(sim_matrix, n_clusters, **kwargs):
     if len(sim_matrix.shape) == 1:
         sim_matrix = get_squareform(sim_matrix)
 
@@ -480,7 +480,7 @@ def get_partition_spectral(sim_matrix, n_clusters):
     norm_sim_matrix = get_normalized_sim_matrix(sim_matrix)
 
     def clustering_method(k):
-        return SpectralClustering(n_clusters=k, affinity='precomputed').fit_predict(norm_sim_matrix)
+        return SpectralClustering(n_clusters=k, affinity='precomputed', **kwargs).fit_predict(norm_sim_matrix)
 
     return _get_partition(clustering_method, n_clusters, sim_matrix)
 

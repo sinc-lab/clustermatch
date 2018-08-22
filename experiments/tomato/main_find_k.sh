@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 python main_find_k.py \
     --harvest 0809 \
