@@ -130,3 +130,11 @@ The variable `partition` will have the clustering solution for the number of
 clusters specified (`3` in this case).  You can specify multiple input data
 files by filling the list `data_files`.
 
+Clustermatch is able to process different data types (numerical, ordinal or
+categorical) with no previous preprocessing required. The current
+implementation considers a variable as categorical if it contains text. The
+rest, numerical and ordinal, are processed in a similar way, so you are
+responsible for coding your ordinal varibles appropriately (For example,
+`low`, `normal` and `high` could be coded as 0, 1, 2; otherwise, if left as text,
+will be considered as categorical).
+
