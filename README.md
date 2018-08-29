@@ -47,7 +47,7 @@ system:
 $ python -m unittest discover .
 ......................................................................
 
-Ran 92 tests in 59.562s
+Ran 92 tests in 47.056s
 
 OK
 ```
@@ -63,7 +63,7 @@ to the Clustermatch folder):
 ```bash
 $ export PYTHONPATH={CLUSTERMATCH_FOLDER}
 $ cd {CLUSTERMATCH_FOLDER}/experiments
-$ python main.py --data-transf transform_rows_nonlinear03 --noise-perc 20 --n-jobs 4 --n-reps 1 --n-features 50
+$ python main.py --data-transf transform_rows_nonlinear03 --noise-perc 45 --n-jobs 4 --n-reps 1 --n-features 50
 Running now:
 {
   "clustering_algorithm": "spectral",
@@ -72,7 +72,7 @@ Running now:
   "data_noise": {
     "magnitude": 0.0,
     "percentage_measures": 0.0,
-    "percentage_objects": 0.2
+    "percentage_objects": 0.45
   },
   "data_transform": "Nonlinear row transformation 03. 10 simulated data sources; Functions: x^4, log, exp2, 100, log1p, x^5, 10000, log10, 0.0001, log2",
   "k_final": null,
@@ -81,31 +81,31 @@ Running now:
 ```
 
 The arguments to the `main.py` scripts are: the data transformation function
-(`--data-transf transform_rows_nonlinear03`), the noise percentage (`--noise-perc 20`), the number of
+(`--data-transf transform_rows_nonlinear03`), the noise percentage (`--noise-perc 45`), the number of
 cores used (`--n-jobs 4`) and the number of repetitions (`--n-reps 1`). We are using just `1`
 repetition and 50 features (`--n-features 50`) so as to speed up the
 experiment. If you want to fully run this experiment as it was done in the
 manuscript (Figure 3), use this comand (for all noise levels):
 
 ```bash
-python main.py --data-transf transform_rows_nonlinear03 --noise-perc 20 --n-jobs 4 --n-reps 1
+python main.py --data-transf transform_rows_nonlinear03 --noise-perc 45 --n-jobs 4 --n-reps 20
 ```
 
 Once finished, you will find the output in directory
-`results_transform_rows_nonlinear03_0.2/{TIMESTAMP}/`:
+`results_transform_rows_nonlinear03_0.45/{TIMESTAMP}/`:
 
 ```bash
-$ cat results_transform_rows_nonlinear03_0.2/20180508_093733/output000.txt
+$ cat results_transform_rows_nonlinear03_0.45/20180829_161133/output000.txt
 
 [...]
 
 method              ('metric', 'mean')    ('metric', 'std')    ('time', 'mean')
 ----------------  --------------------  -------------------  ------------------
-00. Clustermatch                  1.00                  nan               38.17
-01. SC-Pearson                    0.23                  nan                0.38
-02. SC-Spearman                   0.29                  nan                0.89
-03. SC-DC                         1.00                  nan               40.99
-04. SC-MIC                        1.00                  nan               58.09
+00. Clustermatch                  1.00                  nan               31.56
+01. SC-Pearson                    0.11                  nan                0.33
+02. SC-Spearman                   0.29                  nan                0.67
+03. SC-DC                         0.45                  nan               37.19
+04. SC-MIC                        0.88                  nan               45.73
 ```
 
 ## Usage
@@ -120,7 +120,7 @@ $ ipython
 ```python
 In [1]: from utils.data import merge_sources
 In [2]: from clustermatch.cluster import calculate_simmatrix, get_partition_spectral
-In [3]: data_files = ['experiments/tomato_data/sample.xlsx']
+In [3]: data_files = ['experiments/tomato/data/real_sample.xlsx']
 In [4]: merged_sources, feature_names, sources_names = merge_sources(data_files)
 In [5]: cm_sim_matrix = calculate_simmatrix(merged_sources, n_jobs=4)
 In [6]: partition = get_partition_spectral(cm_sim_matrix, 3)
