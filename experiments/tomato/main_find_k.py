@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
     np.random.seed(33)
 
-    timestamp = f'find_k_{args.harvest}'
+    timestamp = os.path.join(args.harvest, 'find_k')
 
     data_files = [os.path.join(BASE_DATA_DIR, df) for df in data_files_dict[args.harvest]]
 
