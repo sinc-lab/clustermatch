@@ -9,13 +9,13 @@ export PYTHONPATH=~/projects/clustermatch_public/
 python main.py \
     --harvest 0809 \
     --spectral-n-init ${N_INIT} \
-    --n-clusters 5 \
+    --n-clusters 4 \
     --n-jobs ${N_JOBS}
 
 python main.py \
     --harvest 0910 \
     --spectral-n-init ${N_INIT} \
-    --n-clusters 2 \
+    --n-clusters 4 \
     --n-jobs ${N_JOBS}
 
 python main.py \
@@ -27,6 +27,6 @@ python main.py \
 python main.py \
     --harvest all \
     --spectral-n-init ${N_INIT} \
-    --n-clusters 5 \
+    --n-clusters 7 \
     --n-jobs ${N_JOBS}
 
