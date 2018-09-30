@@ -23,6 +23,7 @@ if __name__ == '__main__':
     parser.add_argument('--spectral-n-init', type=int, default=10)
     parser.add_argument('--n-clusters', type=int)
     parser.add_argument('--compute-pvalues', action='store_true')
+    parser.add_argument('--compute-pvalues-n-perms', type=int)
     parser.add_argument('--n-jobs', type=int, default=1)
     args = parser.parse_args()
 
@@ -84,7 +85,7 @@ if __name__ == '__main__':
         n_perm = None
     else:
         compute_perm_pvalue = True
-        n_perm = 500
+        n_perm = args.compute_pvalues_n_perms
 
     start_time = time.time()
     cm_sim_matrix, cm_pvalue_sim_matrix = \
