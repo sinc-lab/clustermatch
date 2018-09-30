@@ -21,6 +21,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--harvest', required=True, choices=['all', '0809', '0910', '1112'])
     parser.add_argument('--spectral-n-init', type=int, default=10)
+    parser.add_argument('--n-clusters', type=int)
     parser.add_argument('--compute-pvalues', action='store_true')
     parser.add_argument('--n-jobs', type=int, default=1)
     args = parser.parse_args()
@@ -64,14 +65,15 @@ if __name__ == '__main__':
     min_n_tomatoes = min_n_tomatoes_dict[harvest_selected]
 
     # k_final = (int(merged_sources.shape[0] * 0.40),)
-    k_final_dict = {
-        '0809': 6,
-        '0910': 5,
-        '1112': 7,
-        'all': 5,
-    }
+    # k_final_dict = {
+    #     '0809': 6,
+    #     '0910': 5,
+    #     '1112': 7,
+    #     'all': 5,
+    # }
 
-    k_final = (k_final_dict[harvest_selected], )
+    #k_final = (k_final_dict[harvest_selected], )
+    k_final = (args.n_clusters, )
 
     columns_order = ['k={0}'.format(str(k)) for k in k_final]
 
@@ -114,3 +116,4 @@ if __name__ == '__main__':
     shared_objects_matrix = calculate_simmatrix(merged_sources, sim_func='shared_objects', fill_diag_value=np.nan, n_jobs=n_jobs)
     shared_objects_matrix = get_pval_matrix_by_partition(shared_objects_matrix, partition)
     save_excel(shared_objects_matrix, 'shared_tomatoes', timestamp=timestamp)
+
