@@ -8,7 +8,7 @@ import argparse
 import numpy as np
 
 from clustermatch.cluster import calculate_simmatrix, get_partition_spectral, get_normalized_sim_matrix, \
-    get_pval_matrix_by_partition
+    get_pval_matrix_by_partition, get_sim_matrix_by_partition
 from utils.data import merge_sources
 from utils.output import get_timestamp, save_partitions, create_partition_plot_html, to_binary, get_clustergrammer_link, \
     save_excel, write_data_description, append_data_description
@@ -79,19 +79,10 @@ if __name__ == '__main__':
     columns_order = ['k={0}'.format(str(k)) for k in k_final]
 
     print('Getting similarity matrix with Clustermatch')
-
-    if not args.compute_pvalues:
-        compute_perm_pvalue = False
-        n_perm = None
-    else:
-        compute_perm_pvalue = True
-        n_perm = args.compute_pvalues_n_perms
-
     start_time = time.time()
-    cm_sim_matrix, cm_pvalue_sim_matrix = \
-        calculate_simmatrix(merged_sources, internal_n_clusters=k_internal, compute_perm_pvalue=compute_perm_pvalue,
-                            n_perm=n_perm, return_pvalue=True, min_n_common_features=min_n_tomatoes,
-                            n_jobs=n_jobs)
+    cm_sim_matrix = \
+        calculate_simmatrix(merged_sources, internal_n_clusters=k_internal,
+                            min_n_common_features=min_n_tomatoes, n_jobs=n_jobs)
     print('Getting final partition')
     partition = get_partition_spectral(cm_sim_matrix, k_final, n_init=args.spectral_n_init, n_jobs=n_jobs)
     final_time = time.time()
@@ -99,7 +90,12 @@ if __name__ == '__main__':
 
     if args.compute_pvalues:
         print('Getting pvalue matrix')
-        cm_pvalue_sim_matrix = get_pval_matrix_by_partition(cm_pvalue_sim_matrix, partition)
+        cm_pvalue_sim_matrix = get_pval_matrix_by_partition(
+            merged_sources, partition,
+            k_internal, min_n_tomatoes,
+            args.compute_pvalues_n_perms,
+            n_jobs
+        )
 
         save_excel(cm_pvalue_sim_matrix, 'cm_pvalue', timestamp=timestamp)
         print('cm_pvalue saved')
@@ -115,6 +111,6 @@ if __name__ == '__main__':
 
     print('Getting shared objects')
     shared_objects_matrix = calculate_simmatrix(merged_sources, sim_func='shared_objects', fill_diag_value=np.nan, n_jobs=n_jobs)
-    shared_objects_matrix = get_pval_matrix_by_partition(shared_objects_matrix, partition)
+    shared_objects_matrix = get_sim_matrix_by_partition(shared_objects_matrix, partition)
     save_excel(shared_objects_matrix, 'shared_tomatoes', timestamp=timestamp)
 

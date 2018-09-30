@@ -450,22 +450,54 @@ def get_normalized_sim_matrix(sim_matrix):
     return ((sim_matrix - sim_matrix_min) / (sim_matrix_max - sim_matrix_min))
 
 
-def get_pval_matrix_by_partition(pval_matrix, partition):
+def get_sim_matrix_by_partition(sim_matrix, partition):
     # pick first partition
     part = partition.iloc[:, 0]
 
     sorted_index = []
 
-    new_matrix_vals = np.empty(pval_matrix.shape)
+    new_matrix_vals = np.empty(sim_matrix.shape)
     new_matrix_vals[:] = np.nan
-    pval_matrix_sorted = pd.DataFrame(new_matrix_vals,
-                                      index=pval_matrix.index.tolist(), columns=pval_matrix.index.tolist())
+    pval_matrix_sorted = pd.DataFrame(
+        new_matrix_vals,
+        index=sim_matrix.index.tolist(),
+        columns=sim_matrix.index.tolist()
+    )
 
     for k in np.unique(part):
         cluster_index = part[part == k].index.tolist()
         sorted_index.extend(cluster_index)
 
-        pval_matrix_sorted.loc[cluster_index, cluster_index] = pval_matrix.loc[cluster_index, cluster_index]
+        pval_matrix_sorted.loc[cluster_index, cluster_index] = sim_matrix.loc[cluster_index, cluster_index]
+
+    return pval_matrix_sorted.loc[sorted_index, sorted_index]
+
+
+def get_pval_matrix_by_partition(data, partition, k_internal, min_n_common_features, n_perms, n_jobs):
+    # pick first partition
+    part = partition.iloc[:, 0]
+
+    sorted_index = []
+
+    new_matrix_vals = np.empty((data.shape[0], data.shape[0]))
+    new_matrix_vals[:] = np.nan
+    pval_matrix_sorted = pd.DataFrame(
+        new_matrix_vals,
+        index=data.index.tolist(),
+        columns=data.index.tolist()
+    )
+
+    for k in np.unique(part):
+        cluster_index = part[part == k].index.tolist()
+
+        cluster_k_pvalue_matrix = \
+            calculate_simmatrix(data.loc[cluster_index], internal_n_clusters=k_internal, compute_perm_pvalue=True,
+                                n_perm=n_perms, return_pvalue=True, min_n_common_features=min_n_common_features,
+                                n_jobs=n_jobs)[1]
+
+        sorted_index.extend(cluster_index)
+
+        pval_matrix_sorted.loc[cluster_index, cluster_index] = cluster_k_pvalue_matrix.loc[cluster_index, cluster_index]
 
     return pval_matrix_sorted.loc[sorted_index, sorted_index]
 

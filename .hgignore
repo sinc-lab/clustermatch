@@ -4,3 +4,4 @@ __pycache__/
 *.swp
 .idea/
 experiments/results_*/
+experiments/tomato/results/
