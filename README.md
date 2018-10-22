@@ -1,5 +1,5 @@
 # clustermatch
-_Title:_ Clustermatch: discovering hidden relations in highly-diverse kinds of qualitative and quantitative data without standardization  
+_Title:_ Clustermatch: discovering hidden relations in highly-diverse kinds of qualitative and quantitative data without standardization
 _Authors:_ Milton Pividori, Andres Cernadas, Luis de Haro, Fernando Carrari, Georgina Stegmayer and Diego H. Milone
 
 sinc(i) (Research institute for signals, systems and computational intelligence) - http://sinc.unl.edu.ar
@@ -11,7 +11,7 @@ sinc(i) (Research institute for signals, systems and computational intelligence)
 Clustermatch is an efficient clustering method for processing highly diverse
 data. It can handle very different data types (such as numerical and
 categorical), in the presence of linear or non-linear relationships, also with
-noise, and without the need of any previous pre-processing.  The article
+noise, and without the need of any previous pre-processing. The article
 describing the method has been sent for publication.
 
 If you want to quickly test Clustermatch, you can access an online web-demo from
@@ -32,7 +32,7 @@ $ sudo apt-get install build-essential
 The recommended way to install the Python environment needed is using the
 [Anaconda](https://anaconda.org/)/[Miniconda](https://conda.io/miniconda.html)
 distribution. Once conda is installed, move to the folder where Clustermatch
-was unpacked and follow this steps:
+was unpacked and follow these steps:
 
 ```bash
 $ conda env create -n cm -f environment.yml
@@ -40,7 +40,7 @@ $ conda activate cm
 ```
 
 This will create a conda environment named `cm`. The last step activates the
-environment.  You can run the test suite to make sure everything works in your
+environment. You can run the test suite to make sure everything works in your
 system:
 
 ```bash
@@ -57,8 +57,8 @@ OK
 
 You can reproduce one of the manuscripts results by running an experiment using
 an artificial dataset with several linear and non-linear transformations and
-see how the method behave (replace `{CLUSTERMATCH_FOLDER}` with the real path
-to the Clustermatch folder):
+see how the method behave (replace `{CLUSTERMATCH_FOLDER}` with the path
+of the Clustermatch folder):
 
 ```bash
 $ export PYTHONPATH={CLUSTERMATCH_FOLDER}
