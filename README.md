@@ -137,4 +137,3 @@ rest, numerical and ordinal, are processed in a similar way, so you are
 responsible for coding your ordinal varibles appropriately (For example,
 `low`, `normal` and `high` could be coded as 0, 1, 2; otherwise, if left as text,
 will be considered as categorical).
-
