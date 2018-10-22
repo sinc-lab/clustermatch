@@ -85,7 +85,7 @@ The arguments to the `main.py` scripts are: the data transformation function
 cores used (`--n-jobs 4`) and the number of repetitions (`--n-reps 1`). We are using just `1`
 repetition and 50 features (`--n-features 50`) so as to speed up the
 experiment. If you want to fully run this experiment as it was done in the
-manuscript (Figure 3), use this comand (for all noise levels):
+manuscript (Figure 3), use this command (for all noise levels):
 
 ```bash
 python main.py --data-transf transform_rows_nonlinear03 --noise-perc 45 --n-jobs 4 --n-reps 20
@@ -134,6 +134,6 @@ Clustermatch is able to process different data types (numerical, ordinal or
 categorical) with no previous preprocessing required. The current
 implementation considers a variable as categorical if it contains text. The
 rest, numerical and ordinal, are processed in a similar way, so you are
-responsible for coding your ordinal varibles appropriately (For example,
+responsible for coding your ordinal varibles appropriately (for example,
 `low`, `normal` and `high` could be coded as 0, 1, 2; otherwise, if left as text,
 will be considered as categorical).
