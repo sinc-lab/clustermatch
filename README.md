@@ -1,5 +1,6 @@
 # clustermatch
 _Title:_ Clustermatch: discovering hidden relations in highly-diverse kinds of qualitative and quantitative data without standardization
+
 _Authors:_ Milton Pividori, Andres Cernadas, Luis de Haro, Fernando Carrari, Georgina Stegmayer and Diego H. Milone
 
 sinc(i) (Research institute for signals, systems and computational intelligence) - http://sinc.unl.edu.ar
@@ -17,6 +18,9 @@ describing the method has been sent for publication.
 If you want to quickly test Clustermatch, you can access an online web-demo from
 [here](http://sinc.unl.edu.ar/web-demo/clustermatch/).
 
+Mirrors:
+ * Github: https://github.com/sinc-lab/clustermatch
+ * Bitbucket (Mercurial): https://bitbucket.org/sinc-lab/clustermatch
 
 ## Installation
 
