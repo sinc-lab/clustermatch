@@ -56,6 +56,12 @@ Ran 92 tests in 47.056s
 OK
 ```
 
+Keep in mind that if you want to fully reproduce the results in the manuscript,
+then you need to install the full environment using the file
+`environment_full.yml`, which has additional dependencies. The one we used
+before (`environment.yml`) has the minimum set of packages needed to run
+Clustermatch.
+
 
 ## Reproducing results
 

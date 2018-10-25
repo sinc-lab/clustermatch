@@ -3,13 +3,20 @@ channels:
 - defaults
 dependencies:
 - tabulate=0.8
+- requests=2.18
 - ipython=6.2
 - joblib=0.11
+- matplotlib=2.1
 - numpy=1.13
 - pandas=0.21
 - python=3.6
 - scikit-learn=0.19
 - scipy=1.0.0
+- seaborn=0.8
 - xlrd=1.1
 - xlwt=1.2
 - openpyxl=2.4
+- pillow=5.1
+- pip:
+  - minepy==1.2.1
+  - pyclustering==0.8.1

@@ -8,13 +8,23 @@ import numpy as np
 from scipy.cluster.hierarchy import fcluster
 from scipy.spatial.distance import squareform, pdist
 import pandas as pd
-import matplotlib
-import seaborn as sns
-import requests
+
+try:
+    import matplotlib
+    import seaborn as sns
+    sns.set(context="paper", font="monospace")
+    MATPLOTLIB_INSTALLED = True
+except:
+    MATPLOTLIB_INSTALLED = False
+
+try:
+    import requests
+    REQUESTS_INSTALLED = True
+except:
+    REQUESTS_INSTALLED = False
 
 from utils.misc import get_temp_file_name
 
-sns.set(context="paper", font="monospace")
 
 RESULTS_DIR = 'results'
 
@@ -38,6 +48,9 @@ def setup_results_dir(func):
 
 
 def get_clustergrammer_link(square_matrix, names):
+    if not REQUESTS_INSTALLED:
+        raise ValueError('requests is not installed')
+
     # save sim matrix as csv and get clustergrammer visualization
     df = pd.DataFrame(square_matrix)
     df['names'] = names
@@ -170,6 +183,9 @@ def save_partitions(partitions, timestamp, extra_columns=None, columns_order=Non
 
 @setup_results_dir
 def save_coassociation_matrix(ensemble, partition, timestamp, columns_order=None, image_format='pdf'):
+    if not MATPLOTLIB_INSTALLED:
+        raise ValueError('matplotlib is not installed')
+
     condensed_matrix = _get_condensed_distance_matrix(ensemble)
     full_matrix = squareform(condensed_matrix)
     full_matrix = 1 - full_matrix
@@ -209,6 +225,9 @@ def save_coassociation_matrix(ensemble, partition, timestamp, columns_order=None
 
 @setup_results_dir
 def save_similarity_matrix(partition, feature_names, sim_matrix, timestamp, image_format='pdf'):
+    if not MATPLOTLIB_INSTALLED:
+        raise ValueError('matplotlib is not installed')
+
     partition_idxs_sorted = np.argsort(partition)
     sim_matrix_sorted = sim_matrix[partition_idxs_sorted, :]
     sim_matrix_sorted = sim_matrix_sorted[:, partition_idxs_sorted]
@@ -238,6 +257,9 @@ def save_reps_comparison(reps_comparison, timestamp):
 
 @setup_results_dir
 def save_clustermap(sim_matrix, feature_names, sources_names, partition_linkage, timestamp, image_format='pdf'):
+    if not MATPLOTLIB_INSTALLED:
+        raise ValueError('matplotlib is not installed')
+
     font_scale = (50.0 / len(feature_names))
     # sns.set(font_scale=font_scale)
 
