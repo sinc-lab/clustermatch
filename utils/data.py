@@ -104,7 +104,7 @@ def merge_sources(source_files, rep_merge=np.mean):
     sources_names = [sn for sn_idx, sn in enumerate(sources_names)
                      for i in range(processed_sources[sn_idx].shape[0])]
 
-    full_sources = pd.concat(processed_sources, sort=True)
+    full_sources = pd.concat(processed_sources)
 
     # renamed duplicated
     if not full_sources.index.is_unique:
