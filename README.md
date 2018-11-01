@@ -23,6 +23,16 @@ Mirrors:
  * Bitbucket (Mercurial): https://bitbucket.org/sinc-lab/clustermatch
 
 ## Installation
+You can easily install Clustermatch with pip by running:
+
+```bash
+$ pip install clustermatch
+```
+
+This will install a command line utility (run `clustermatch -h` for usage instructions)
+that it is considered alpha and still under development. Follow the instructions
+below if you want to create your own environment and use the Python API to run
+Clustermatch.
 
 Clustermatch works with Python 3.6 (it should work with version 3.5 too). You
 also need a C compiler (like GCC) to install `minepy` and run the simulations,
@@ -119,6 +129,16 @@ method              ('metric', 'mean')    ('metric', 'std')    ('time', 'mean')
 ```
 
 ## Usage
+
+If you installed the command line utility (`clustermatch`), you can run it like this:
+
+```bash
+$ cd {CLUSTERMATCH_FOLDER}
+$ clustermatch -i experiments/tomato/data/real_sample.xlsx -k 3 -o partition.xls
+```
+
+The file `partition.xls` will contain the partition of the data (`real_sample.xlsx`).
+Check out the help (`clustermatch -h`) for more options.
 
 You can also try the method by loading a sample of the tomato dataset used in
 the manuscript. For that, follow these instructions:
