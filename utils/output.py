@@ -163,8 +163,7 @@ def save_excel(dataframe, filename, timestamp):
     dataframe.to_excel(filepath, encoding='utf-8')
 
 
-@setup_results_dir
-def save_partitions(partitions, timestamp, extra_columns=None, columns_order=None, sort_by_columns=None):
+def save_partitions_simple(partitions, partitions_path, extra_columns=None, columns_order=None, sort_by_columns=None):
     if extra_columns is not None:
         extra_df = pd.DataFrame(extra_columns, index=partitions.index)
         partitions = pd.concat([partitions, extra_df], axis=1)
@@ -175,8 +174,13 @@ def save_partitions(partitions, timestamp, extra_columns=None, columns_order=Non
     if sort_by_columns is not None:
         partitions = partitions.sort_values(sort_by_columns)
 
-    partitions_path = os.path.join(RESULTS_DIR, timestamp, 'partitions' + '.xls')
     partitions.to_excel(partitions_path, encoding='utf-8')
+
+
+@setup_results_dir
+def save_partitions(partitions, timestamp, **kwargs):
+    partitions_path = os.path.join(RESULTS_DIR, timestamp, 'partitions' + '.xls')
+    save_partitions_simple(partitions, partitions_path, **kwargs)
 
     return partitions_path
 

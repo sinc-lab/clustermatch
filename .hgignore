@@ -5,3 +5,6 @@ __pycache__/
 .idea/
 experiments/results_*/
 experiments/tomato/results/
+build/
+clustermatch.egg-info/
+dist/
