@@ -5,12 +5,11 @@ from itertools import combinations, product
 from time import time
 
 import numpy as np
-from scipy.spatial.distance import squareform, pdist
-from sklearn.metrics import adjusted_rand_score as ari
+from scipy.spatial.distance import squareform
 
 from clustermatch.cluster import calculate_simmatrix, get_squareform, run_quantile_clustering
 from tests.utils import get_data_file
-from utils.data import merge_sources
+from clustermatch.utils.data import merge_sources
 
 
 class ClusterMatchSimilarityMatrixTest(unittest.TestCase):

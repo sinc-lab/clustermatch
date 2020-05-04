@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.metrics import adjusted_rand_score as ari
 
 from clustermatch.cluster import clustermatch, calculate_simmatrix, get_partition_agglomerative, get_partition_spectral
-from utils.data import merge_sources
+from clustermatch.utils.data import merge_sources
 from tests.utils import get_data_file
 
 

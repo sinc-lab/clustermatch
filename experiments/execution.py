@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.metrics import adjusted_rand_score as ari, adjusted_mutual_info_score as ami
 from tabulate import tabulate
 
-from utils.output import get_timestamp
+from clustermatch.utils.output import get_timestamp
 
 
 def _run_experiment(rep_number, data_generator, methods, k_final=None, data_transform=None, data_noise=None,

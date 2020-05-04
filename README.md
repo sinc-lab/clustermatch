@@ -149,7 +149,7 @@ $ cd {CLUSTERMATCH_FOLDER}
 $ ipython
 ```
 ```python
-In [1]: from utils.data import merge_sources
+In [1]: from clustermatch.utils.data import merge_sources
 In [2]: from clustermatch.cluster import calculate_simmatrix, get_partition_spectral
 In [3]: data_files = ['experiments/tomato/data/real_sample.xlsx']
 In [4]: merged_sources, feature_names, sources_names = merge_sources(data_files)

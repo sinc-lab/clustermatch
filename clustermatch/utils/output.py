@@ -23,7 +23,7 @@ try:
 except:
     REQUESTS_INSTALLED = False
 
-from utils.misc import get_temp_file_name
+from clustermatch.utils.misc import get_temp_file_name
 
 
 RESULTS_DIR = 'results'

@@ -10,7 +10,7 @@ from pyclustering.cluster.kmedoids import kmedoids
 from pyclustering.cluster.optics import optics
 
 from clustermatch.cluster import cm, calculate_simmatrix, get_partition_spectral
-from utils.methods import distcorr
+from clustermatch.utils.methods import distcorr
 
 
 SPECTRAL_METHOD = 'spectral'

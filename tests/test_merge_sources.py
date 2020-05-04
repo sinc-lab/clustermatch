@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from utils.data import merge_sources
+from clustermatch.utils.data import merge_sources
 from .utils import get_data_file
 
 

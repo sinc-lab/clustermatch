@@ -7,12 +7,9 @@ import argparse
 
 import numpy as np
 
-from clustermatch.cluster import calculate_simmatrix, get_partition_spectral, get_normalized_sim_matrix, \
-    get_pval_matrix_by_partition, get_sim_matrix_by_partition
-from utils.data import merge_sources
-from utils.output import get_timestamp, save_partitions, create_partition_plot_html, to_binary, get_clustergrammer_link, \
-    save_excel, write_data_description, append_data_description
-
+from clustermatch.cluster import calculate_simmatrix, get_partition_spectral, get_pval_matrix_by_partition, get_sim_matrix_by_partition
+from clustermatch.utils.data import merge_sources
+from clustermatch.utils.output import save_partitions, create_partition_plot_html, save_excel, write_data_description
 
 BASE_DATA_DIR = 'data'
 

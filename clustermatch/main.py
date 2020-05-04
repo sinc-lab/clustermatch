@@ -2,9 +2,9 @@ import argparse
 import logging
 
 from clustermatch import __short_description__
-from clustermatch.cluster import calculate_simmatrix, get_partition_spectral, get_pval_matrix_by_partition
-from utils.data import merge_sources
-from utils.output import save_partitions_simple
+from clustermatch.cluster import calculate_simmatrix, get_partition_spectral
+from clustermatch.utils.data import merge_sources
+from clustermatch.utils.output import save_partitions_simple
 
 LOG_FORMAT = "[%(asctime)s] %(levelname)s: %(message)s"
 logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)

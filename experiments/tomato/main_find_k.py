@@ -9,8 +9,8 @@ from joblib import Parallel, delayed
 
 from clustermatch.cluster import get_partition_spectral, calculate_simmatrix
 
-from utils.data import merge_sources
-from utils.output import to_binary, write_text_file
+from clustermatch.utils.data import merge_sources
+from clustermatch.utils.output import to_binary, write_text_file
 
 
 def sc(sim_matrix, k):
