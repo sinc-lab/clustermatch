@@ -79,6 +79,7 @@ def _run_clustering_generic(sim_data_matrix, k, clustering_algorithm, n_jobs=1):
 
     if clustering_algorithm in (SPECTRAL_METHOD, AFFINITY_PROPAGATION_METHOD):
         if clustering_algorithm == SPECTRAL_METHOD:
+            # sim_data_matrix += 1e-8
             return SpectralClustering(n_clusters=k, affinity='precomputed', n_jobs=n_jobs).fit_predict(sim_data_matrix)
 
         elif clustering_algorithm == AFFINITY_PROPAGATION_METHOD:
@@ -174,6 +175,24 @@ def run_mic(data, k, n_jobs=1, **kwargs):
     04. SC-MIC
     """
     r_sim_mat = pairwise_distances(data, metric=_compute_mic, n_jobs=n_jobs)
+    return _run_clustering_generic(r_sim_mat, k, n_jobs=n_jobs, **kwargs)
+
+
+def _compute_pps(x, y):
+    import pandas as pd
+    import ppscore as pps
+
+    df = pd.DataFrame({'x': x, 'y': y})
+    pps_xy = pps.score(df, 'x', 'y', sample=None)['ppscore']
+    pps_yx = pps.score(df, 'y', 'x', sample=None)['ppscore']
+    return max((pps_xy, pps_yx))
+
+
+def run_ppscore(data, k, n_jobs=1, **kwargs):
+    """
+    05. PPS
+    """
+    r_sim_mat = pairwise_distances(data, metric=_compute_pps, n_jobs=n_jobs)
     return _run_clustering_generic(r_sim_mat, k, n_jobs=n_jobs, **kwargs)
 
 

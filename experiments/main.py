@@ -7,7 +7,7 @@ import experiments.data as exp_data
 from experiments.data import blobs_data_generator02
 from experiments.execution import run_experiments_combination
 from experiments.methods import run_pearson, run_spearman, \
-    run_clustermatch_quantiles_k_medium, run_distcorr, run_mic
+    run_clustermatch_quantiles_k_medium, run_distcorr, run_mic, run_ppscore
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data-seed-mode', action='store_true')
@@ -45,6 +45,7 @@ if args.methods_to_test == 'all':
         run_distcorr,
         run_mic,
         run_clustermatch_quantiles_k_medium,
+        run_ppscore,
     )
 elif args.methods_to_test == 'cm':
     methods = (

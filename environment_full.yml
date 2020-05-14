@@ -20,3 +20,4 @@ dependencies:
 - pip:
   - minepy==1.2.1
   - pyclustering==0.8.1
+  - ppscore==0.0.2
