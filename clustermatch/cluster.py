@@ -210,11 +210,24 @@ def row_col_from_condensed_index(d,i):
     return (int(x), int(y))
 
 
+def _adjusted_rand_index(part1, part2):
+    from sklearn.metrics.cluster import pair_confusion_matrix
+
+    (tn, fp), (fn, tp) = pair_confusion_matrix(part1, part2).astype(object)
+
+    # Special cases: empty data or full agreement
+    if fn == 0 and fp == 0:
+        return 1.0
+
+    return 2. * (tp * tn - fn * fp) / ((tp + fn) * (fn + tn) +
+                                       (tp + fp) * (fp + tn))
+
+
 def _compute_ari(part1, part2):
     if np.isnan(part1).any() or len(part1) == 0:
         return 0.0
 
-    return ari(part1, part2)
+    return _adjusted_rand_index(part1, part2)
 
 
 def _get_contingency_table(p1, p2):
